@@ -50,10 +50,12 @@
       <nav id="navmenu" class="navmenu">
         <ul>
           <li><a href="{{ url('admin') }}">Dashboard<br></a></li>
-          <li><a href="{{ url('admin') }}">Pelanggan</a></li>
-          <li><a href="{{ url('admin') }}">Tukang</a></li>
-          <li><a href="{{ url('jasa') }}">Layanan</a></li>
-          <li><a href="{{ url('admin') }}">Pemesanan</a></li>
+          <li><a href="{{ url('pelanggan') }}">Pelanggan</a></li>
+          <li><a href="{{ url('tukang') }}">Tukang</a></li>
+          <li><a href="{{ url('keahlian') }}">Keahlian</a></li>
+          <li><a href="{{ url('jasa') }}">Jasa</a></li>
+          <li><a href="{{ url('bank') }}">Bank</a></li>
+          <li><a href="{{ url('bank') }}">Pemesanan</a></li>
           <li><a href="{{ url('admin') }}">Pembayaran</a></li>
           <li><a href="{{ url('admin') }}">Bank</a></li>
           <li class="dropdown"><a href="#"><span>Profile</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>

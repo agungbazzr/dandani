@@ -15,11 +15,18 @@ class PemesananController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $pemesanan = Pemesanan::orderBy('created_at')->get();
+        if (isset($request->query)) {
+            $q = $request->query('query');
+            $pemesanan = Pemesanan::where( 'id', 'LIKE', '%' . $q . '%' )->orWhere ( 'id_pelanggan', 'LIKE', '%' . $q . '%' )->orderBy('created_at')->paginate(10);
+        }else{
+            $pemesanan = Pemesanan::orderBy('created_at')->paginate(10);
+        }
         
-        return view('pemesanan.index', compact('pemesanan'));
+        
+        return view('admin.pemesanan.index', compact('pemesanan'));
+        
     }
 
     /**
@@ -29,7 +36,7 @@ class PemesananController extends Controller
      */
     public function create()
     {
-        return view('pemesanan.create');
+        return view('admin.pemesanan.create');
     }
 
     /**
@@ -41,27 +48,25 @@ class PemesananController extends Controller
     public function store(Request $request)
     {   
         $this->validate($request, [
-             'id' => 'required|max:20 ',
-              'id_pelanggan' => 'required|max:255',
-              'id_tukang' => 'required|max:255',
-              'id_alamat' => 'required|max:255',
-              'id_jasa' => 'required|max:255',
-              'total' => 'required|max:255',
-              'keterangan' => 'required',
-              'pesan' => 'required',
-              
+             'id_pelanggan' => 'required|max:255',
+                'id_tukang' => 'required|max:255',
+                'id_alamat' => 'required|max:255',
+                'id_jasa' => 'required|max:255',
+                'total' => 'required|max:255',
+                'keterangan' => 'required',
+                'pesan' => 'required',
+                
         ]);
 
         $pemesanan = Pemesanan::create([
-            'id' => $request->id,
             'id_pelanggan' => $request->id_pelanggan,
-            'id_tukang' => $request->id_tukang,
-            'id_alamat' => $request->id_alamat,
-            'id_jasa' => $request->id_jasa,
-            'total' => $request->total,
-            'keterangan' => $request->keterangan,
-            'pesan' => $request->pesan,
-            
+              'id_tukang' => $request->id_tukang,
+              'id_alamat' => $request->id_alamat,
+              'id_jasa' => $request->id_jasa,
+              'total' => $request->total,
+              'keterangan' => $request->keterangan,
+              'pesan' => $request->pesan,
+              
         ]);
 
         if($pemesanan){
@@ -93,7 +98,7 @@ class PemesananController extends Controller
     { 
         $pemesanan = Pemesanan::where('id', $id)->get();
 
-        return view('pemesanan.edit', ['pemesanan' => $pemesanan]);
+        return view('admin.pemesanan.edit', ['pemesanan' => $pemesanan]);
     }
 
     /**
@@ -107,15 +112,14 @@ class PemesananController extends Controller
     {
         // update data
         $pemesanan = array(
-            'id' => $request->id,
             'id_pelanggan' => $request->id_pelanggan,
-            'id_tukang' => $request->id_tukang,
-            'id_alamat' => $request->id_alamat,
-            'id_jasa' => $request->id_jasa,
-            'total' => $request->total,
-            'keterangan' => $request->keterangan,
-            'pesan' => $request->pesan,
-            
+              'id_tukang' => $request->id_tukang,
+              'id_alamat' => $request->id_alamat,
+              'id_jasa' => $request->id_jasa,
+              'total' => $request->total,
+              'keterangan' => $request->keterangan,
+              'pesan' => $request->pesan,
+              
         );
 
         $update = Pemesanan::where('id',$id)->update($pemesanan);

@@ -67,6 +67,15 @@
           </li>
           
           <li class="nav-item">
+            <a id="side_keahlian" href="{{ route('keahlian.index') }}" class="nav-link">
+              <i class="nav-icon fas fa-tags"></i>
+              <p>
+                Data Keahlian
+              </p>
+            </a>
+          </li>
+          
+          <li class="nav-item">
             <a id="side_pelanggan" href="{{ route('pelanggan.index') }}" class="nav-link">
               <i class="nav-icon fas fa-tags"></i>
               <p>

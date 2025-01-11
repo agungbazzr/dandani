@@ -1,24 +1,7 @@
-@extends('layouts.app-master')
+@extends('layout-admin')
 
-@section('title', 'Jadwal | Sistem Informasi Akademik')
-@section('link')
-  <!-- daterange picker -->
-  <link rel="stylesheet" href="{{ asset('plugins/daterangepicker/daterangepicker.css') }}">
-  <link rel="stylesheet" type="text/css" href="{{ asset('bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css') }}">
-  <!-- iCheck for checkboxes and radio inputs -->
-  <link rel="stylesheet" href="{{ asset('plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
-  <!-- Bootstrap Color Picker -->
-  <link rel="stylesheet" href="{{ asset('plugins/bootstrap-colorpicker/css/bootstrap-colorpicker.min.css') }}">
-  <!-- Tempusdominus Bootstrap 4 -->
-  <link rel="stylesheet" href="{{ asset('plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css') }}">
-  <!-- Select2 -->
-  <link rel="stylesheet" href="{{ asset('plugins/select2/css/select2.min.css') }}">
-  <link rel="stylesheet" href="{{ asset('plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
-  <!-- Bootstrap4 Duallistbox -->
-  <link rel="stylesheet" href="{{ asset('plugins/bootstrap4-duallistbox/bootstrap-duallistbox.min.css') }}">
-  <!-- BS Stepper -->
-  <link rel="stylesheet" href="{{ asset('plugins/bs-stepper/css/bs-stepper.min.css') }}">
-@endsection
+
+@section('title', 'Jadwal')
 @section('content')
  @if(session('error'))
   <div class="alert alert-error">
@@ -37,55 +20,31 @@
    </ul>
  </div>
  @endif
-    <section class="content-header">
-      <div class="container-fluid">
-        <div class="row mb-2">
-          <div class="col-sm-6">
-            <h1>Ubah Data Jadwal</h1>
-          </div>
-          <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="{{ route('jadwal.index') }}">Jadwal</a></li>
-              <li class="breadcrumb-item active">Ubah Data</li>
-            </ol>
-          </div>
+    <section id="starter-section" class="starter-section section">
+    <div class="page-title">
+      
+      <nav class="breadcrumbs">
+        <div class="container">
+          <ol>
+            <li><a href="{{url('jadwal')}}">Jadwal</a></li>
+            <li class="current">Tambah Jadwal</li>
+          </ol>
         </div>
-      </div><!-- /.container-fluid -->
-    </section>
+      </nav>
+    </div>
 
     <!-- Main content -->
-    <section class="content">
+    <div class="container" data-aos="fade-up">
+     <br>
+        @foreach($jadwal as $data)
+          <form class="form-horizontal" role="form" method="POST" action="{{ url('jadwal/update')}}/{{ $data->id }}">
+            {{ csrf_field() }}
 
-      <!-- Default box -->
-      <div class="card">
-        <div class="card-header">
-          <h3 class="card-title">Ubah Data Jadwal</h3>
-
-          <div class="card-tools">
-          </div>
-        </div>
-        <div class="card-body">
-           @foreach($jadwal as $data)
-            <form class="form-horizontal" role="form" method="POST" action="{{ url('jadwal/update')}}/{{ $data->id }}">
-              {{ csrf_field() }}
-
-              <input type="hidden" name="_method" value="PUT">
-              
-        <div class="form-group{{ $errors->has('id') ? ' has-error' : '' }}">
-              <label for="id" class="control-label">Id</label>
-
-              <div>
-                <input id="id" maxlength="20 " type="text" class="form-control " name="id" value="{{ $data->id }}" required autofocus autocomplete="off">
-
-                @if ($errors->has('id'))
-                <span class="help-block">
-                  <strong>{{ $errors->first('id') }}</strong>
-                </span>
-                @endif
-              </div>
-            </div>
-        <div class="form-group{{ $errors->has('id_pemesanan') ? ' has-error' : '' }}">
-              <label for="id_pemesanan" class="control-label">Id Pemesanan</label>
+            <input type="hidden" name="_method" value="PUT">
+            <input type="hidden" name="id" value="id">
+            
+            <div class="mb-3 {{ $errors->has('id_pemesanan') ? ' has-error' : '' }}">
+              <label for="id_pemesanan" class="form-label">Id Pemesanan</label>
 
               <div>
                 <input id="id_pemesanan" maxlength="255" type="text" class="form-control " name="id_pemesanan" value="{{ $data->id_pemesanan }}" required autofocus autocomplete="off">
@@ -97,8 +56,8 @@
                 @endif
               </div>
             </div>
-        <div class="form-group{{ $errors->has('tanggal_kunjungan') ? ' has-error' : '' }}">
-              <label for="tanggal_kunjungan" class="control-label">Tanggal Kunjungan</label>
+            <div class="mb-3 {{ $errors->has('tanggal_kunjungan') ? ' has-error' : '' }}">
+              <label for="tanggal_kunjungan" class="form-label">Tanggal Kunjungan</label>
 
               <div>
                 <input id="tanggal_kunjungan" maxlength="" type="text" class="form-control datepicker" name="tanggal_kunjungan" value="{{ $data->tanggal_kunjungan }}" required autofocus autocomplete="off">
@@ -110,8 +69,8 @@
                 @endif
               </div>
             </div>
-        <div class="form-group{{ $errors->has('tanggal_selesai') ? ' has-error' : '' }}">
-              <label for="tanggal_selesai" class="control-label">Tanggal Selesai</label>
+            <div class="mb-3 {{ $errors->has('tanggal_selesai') ? ' has-error' : '' }}">
+              <label for="tanggal_selesai" class="form-label">Tanggal Selesai</label>
 
               <div>
                 <input id="tanggal_selesai" maxlength="" type="text" class="form-control datepicker" name="tanggal_selesai" value="{{ $data->tanggal_selesai }}" required autofocus autocomplete="off">
@@ -123,55 +82,16 @@
                 @endif
               </div>
             </div>
-              <div class="form-group">
-                <div class="col-md-offset-4">
-                  <button type="submit" class="btn btn-primary"><i class="fa fa-check"></i>
-                    Simpan
-                  </button>
-                  <a href="{{ route('jadwal.index') }}" class="btn btn-success"><i class="fa fa-times"></i> Batal</a>
-                </div>
+            <div class="form-group">
+              <div class="col-md-offset-4">
+                <button type="submit" class="btn btn-primary"><i class="fa fa-check"></i>
+                  Simpan
+                </button>
+                <a href="{{ route('jadwal.index') }}" class="btn btn-success"><i class="fa fa-times"></i> Batal</a>
               </div>
-            </form>
-            @endforeach
-        </div>
-        <!-- /.card-body -->
-        <!-- <div class="card-footer">
-          Footer
-        </div> -->
-        <!-- /.card-footer-->
-      </div>
-      <!-- /.card -->
-
-    </section>
-@endsection
-@section('script')
-<!-- Select2 -->
-<script src="{{ asset('bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
-<script src="{{ asset('plugins/select2/js/select2.full.min.js') }}"></script>
-<!-- Bootstrap4 Duallistbox -->
-<script src="{{ asset('plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js') }}"></script>
-<!-- InputMask -->
-<script src="{{ asset('plugins/moment/moment.min.js') }}"></script>
-<script src="{{ asset('plugins/inputmask/jquery.inputmask.min.js') }}"></script>
-<!-- date-range-picker -->
-<script src="{{ asset('plugins/daterangepicker/daterangepicker.js') }}"></script>
-<!-- bootstrap color picker -->
-<script src="{{ asset('plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.min.js') }}"></script>
-<!-- Tempusdominus Bootstrap 4 -->
-<script src="{{ asset('plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js') }}"></script>
-<!-- Bootstrap Switch -->
-<script src="{{ asset('plugins/bootstrap-switch/js/bootstrap-switch.min.js') }}"></script>
-<!-- BS-Stepper -->
-<script src="{{ asset('plugins/bs-stepper/js/bs-stepper.min.js') }}"></script>
-<!-- dropzonejs -->
-<script src="{{ asset('plugins/dropzone/min/dropzone.min.js') }}"></script>
-<script>
-$('#side_jadwal').addClass("active");
-  $(".datepicker").datepicker({
-        autoclose: true,
-        todayHighlight: true,
-        format: 'yyyy/mm/dd',
-        minDate: 0,
-    });
-</script>
-@endsection
+            </div>
+          </form>
+        @endforeach
+    </div>
+    @endsection
+       

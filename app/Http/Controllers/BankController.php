@@ -15,11 +15,18 @@ class BankController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $bank = Bank::orderBy('created_at')->get();
+        if (isset($request->query)) {
+            $q = $request->query('query');
+            $bank = Bank::where( 'id', 'LIKE', '%' . $q . '%' )->orWhere ( 'nama_bank', 'LIKE', '%' . $q . '%' )->orderBy('created_at')->paginate(10);
+        }else{
+            $bank = Bank::orderBy('created_at')->paginate(10);
+        }
         
-        return view('bank.index', compact('bank'));
+        
+        return view('admin.bank.index', compact('bank'));
+        
     }
 
     /**
@@ -29,7 +36,7 @@ class BankController extends Controller
      */
     public function create()
     {
-        return view('bank.create');
+        return view('admin.bank.create');
     }
 
     /**
@@ -41,23 +48,21 @@ class BankController extends Controller
     public function store(Request $request)
     {   
         $this->validate($request, [
-             'id' => 'required|max:20 ',
-              'nama_bank' => 'required|max:255',
-              'nama_pemilik' => 'required|max:255',
-              'no_rekening' => 'required|max:255',
-              'status_bank' => 'required|max:255',
-              'content' => 'required',
-              
+             'nama_bank' => 'required|max:255',
+                'nama_pemilik' => 'required|max:255',
+                'no_rekening' => 'required|max:255',
+                'status_bank' => 'required|max:255',
+                'content' => 'required',
+                
         ]);
 
         $bank = Bank::create([
-            'id' => $request->id,
             'nama_bank' => $request->nama_bank,
-            'nama_pemilik' => $request->nama_pemilik,
-            'no_rekening' => $request->no_rekening,
-            'status_bank' => $request->status_bank,
-            'content' => $request->content,
-            
+              'nama_pemilik' => $request->nama_pemilik,
+              'no_rekening' => $request->no_rekening,
+              'status_bank' => $request->status_bank,
+              'content' => $request->content,
+              
         ]);
 
         if($bank){
@@ -89,7 +94,7 @@ class BankController extends Controller
     { 
         $bank = Bank::where('id', $id)->get();
 
-        return view('bank.edit', ['bank' => $bank]);
+        return view('admin.bank.edit', ['bank' => $bank]);
     }
 
     /**
@@ -103,13 +108,12 @@ class BankController extends Controller
     {
         // update data
         $bank = array(
-            'id' => $request->id,
             'nama_bank' => $request->nama_bank,
-            'nama_pemilik' => $request->nama_pemilik,
-            'no_rekening' => $request->no_rekening,
-            'status_bank' => $request->status_bank,
-            'content' => $request->content,
-            
+              'nama_pemilik' => $request->nama_pemilik,
+              'no_rekening' => $request->no_rekening,
+              'status_bank' => $request->status_bank,
+              'content' => $request->content,
+              
         );
 
         $update = Bank::where('id',$id)->update($bank);

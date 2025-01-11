@@ -15,11 +15,18 @@ class TukangController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $tukang = Tukang::orderBy('created_at')->get();
+        if (isset($request->query)) {
+            $q = $request->query('query');
+            $tukang = Tukang::where( 'id', 'LIKE', '%' . $q . '%' )->orWhere ( 'image', 'LIKE', '%' . $q . '%' )->orderBy('created_at')->paginate(10);
+        }else{
+            $tukang = Tukang::orderBy('created_at')->paginate(10);
+        }
         
-        return view('tukang.index', compact('tukang'));
+        
+        return view('admin.tukang.index', compact('tukang'));
+        
     }
 
     /**
@@ -29,7 +36,7 @@ class TukangController extends Controller
      */
     public function create()
     {
-        return view('tukang.create');
+        return view('admin.tukang.create');
     }
 
     /**
@@ -41,27 +48,25 @@ class TukangController extends Controller
     public function store(Request $request)
     {   
         $this->validate($request, [
-             'id' => 'required|max:20 ',
-              'image' => 'required|max:255',
-              'nama_tukang' => 'required|max:255',
-              'no_hp' => 'required|max:255',
-              'email' => 'required|max:255',
-              'geo_lat' => 'required|max:255',
-              'geo_long' => 'required|max:255',
-              'alamat' => 'required',
-              
+             'image' => 'required|max:255',
+                'nama_tukang' => 'required|max:255',
+                'no_hp' => 'required|max:255',
+                'email' => 'required|max:255',
+                'geo_lat' => 'required|max:255',
+                'geo_long' => 'required|max:255',
+                'alamat' => 'required',
+                
         ]);
 
         $tukang = Tukang::create([
-            'id' => $request->id,
             'image' => $request->image,
-            'nama_tukang' => $request->nama_tukang,
-            'no_hp' => $request->no_hp,
-            'email' => $request->email,
-            'geo_lat' => $request->geo_lat,
-            'geo_long' => $request->geo_long,
-            'alamat' => $request->alamat,
-            
+              'nama_tukang' => $request->nama_tukang,
+              'no_hp' => $request->no_hp,
+              'email' => $request->email,
+              'geo_lat' => $request->geo_lat,
+              'geo_long' => $request->geo_long,
+              'alamat' => $request->alamat,
+              
         ]);
 
         if($tukang){
@@ -93,7 +98,7 @@ class TukangController extends Controller
     { 
         $tukang = Tukang::where('id', $id)->get();
 
-        return view('tukang.edit', ['tukang' => $tukang]);
+        return view('admin.tukang.edit', ['tukang' => $tukang]);
     }
 
     /**
@@ -107,15 +112,14 @@ class TukangController extends Controller
     {
         // update data
         $tukang = array(
-            'id' => $request->id,
             'image' => $request->image,
-            'nama_tukang' => $request->nama_tukang,
-            'no_hp' => $request->no_hp,
-            'email' => $request->email,
-            'geo_lat' => $request->geo_lat,
-            'geo_long' => $request->geo_long,
-            'alamat' => $request->alamat,
-            
+              'nama_tukang' => $request->nama_tukang,
+              'no_hp' => $request->no_hp,
+              'email' => $request->email,
+              'geo_lat' => $request->geo_lat,
+              'geo_long' => $request->geo_long,
+              'alamat' => $request->alamat,
+              
         );
 
         $update = Tukang::where('id',$id)->update($tukang);

@@ -15,11 +15,18 @@ class PelangganController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $pelanggan = Pelanggan::orderBy('created_at')->get();
+        if (isset($request->query)) {
+            $q = $request->query('query');
+            $pelanggan = Pelanggan::where( 'id', 'LIKE', '%' . $q . '%' )->orWhere ( 'nama_pelanggan', 'LIKE', '%' . $q . '%' )->orderBy('created_at')->paginate(10);
+        }else{
+            $pelanggan = Pelanggan::orderBy('created_at')->paginate(10);
+        }
         
-        return view('pelanggan.index', compact('pelanggan'));
+        
+        return view('admin.pelanggan.index', compact('pelanggan'));
+        
     }
 
     /**
@@ -29,7 +36,7 @@ class PelangganController extends Controller
      */
     public function create()
     {
-        return view('pelanggan.create');
+        return view('admin.pelanggan.create');
     }
 
     /**
@@ -41,19 +48,17 @@ class PelangganController extends Controller
     public function store(Request $request)
     {   
         $this->validate($request, [
-             'id' => 'required|max:20 ',
-              'nama_pelanggan' => 'required|max:255',
-              'no_hp' => 'required|max:255',
-              'email' => 'required|max:255',
-              
+             'nama_pelanggan' => 'required|max:255',
+                'no_hp' => 'required|max:255',
+                'email' => 'required|max:255',
+                
         ]);
 
         $pelanggan = Pelanggan::create([
-            'id' => $request->id,
             'nama_pelanggan' => $request->nama_pelanggan,
-            'no_hp' => $request->no_hp,
-            'email' => $request->email,
-            
+              'no_hp' => $request->no_hp,
+              'email' => $request->email,
+              
         ]);
 
         if($pelanggan){
@@ -85,7 +90,7 @@ class PelangganController extends Controller
     { 
         $pelanggan = Pelanggan::where('id', $id)->get();
 
-        return view('pelanggan.edit', ['pelanggan' => $pelanggan]);
+        return view('admin.pelanggan.edit', ['pelanggan' => $pelanggan]);
     }
 
     /**
@@ -99,11 +104,10 @@ class PelangganController extends Controller
     {
         // update data
         $pelanggan = array(
-            'id' => $request->id,
             'nama_pelanggan' => $request->nama_pelanggan,
-            'no_hp' => $request->no_hp,
-            'email' => $request->email,
-            
+              'no_hp' => $request->no_hp,
+              'email' => $request->email,
+              
         );
 
         $update = Pelanggan::where('id',$id)->update($pelanggan);

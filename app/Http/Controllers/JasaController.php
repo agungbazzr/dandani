@@ -15,11 +15,18 @@ class JasaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $jasa = Jasa::orderBy('created_at')->get();
+        if (isset($request->query)) {
+            $q = $request->query('query');
+            $jasa = Jasa::where( 'id', 'LIKE', '%' . $q . '%' )->orWhere ( 'nama_jasa', 'LIKE', '%' . $q . '%' )->orderBy('created_at')->paginate(10);
+        }else{
+            $jasa = Jasa::orderBy('created_at')->paginate(10);
+        }
+        
         
         return view('admin.jasa.index', compact('jasa'));
+        
     }
 
     /**
@@ -41,6 +48,7 @@ class JasaController extends Controller
     public function store(Request $request)
     {   
         $this->validate($request, [
+             'id' => 'required|max:20 ',
               'nama_jasa' => 'required|max:255',
               'jenis_jasa' => 'required|max:255',
               'harga_jasa' => 'required|max:255',
@@ -61,7 +69,7 @@ class JasaController extends Controller
         if($jasa){
             return redirect('jasa')->with('msg', 'Jasa Berhasil di Tambahkan!');
         } else {
-            return redirect()->route('admin.jasa.create')->with('error', 'Jasa gagal di Tambahkan');
+            return redirect()->route('jasa.create')->with('error', 'Jasa gagal di Tambahkan');
         }
 
 }
@@ -101,7 +109,6 @@ class JasaController extends Controller
     {
         // update data
         $jasa = array(
-            'id' => $request->id,
             'nama_jasa' => $request->nama_jasa,
             'jenis_jasa' => $request->jenis_jasa,
             'harga_jasa' => $request->harga_jasa,
@@ -112,7 +119,7 @@ class JasaController extends Controller
 
         $update = Jasa::where('id',$id)->update($jasa);
 
-        return redirect()->route('admin.jasa.index')->with('msg', 'Jasa Berhasil di ubah');
+        return redirect()->route('jasa.index')->with('msg', 'Jasa Berhasil di ubah');
     }
 
     /**

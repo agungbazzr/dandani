@@ -6,9 +6,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 // models
-use App\Models\Jadwal;
+use App\Models\Keahlian;
 
-class JadwalController extends Controller
+class KeahlianController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -19,13 +19,13 @@ class JadwalController extends Controller
     {
         if (isset($request->query)) {
             $q = $request->query('query');
-            $jadwal = Jadwal::where( 'id', 'LIKE', '%' . $q . '%' )->orWhere ( 'id_pemesanan', 'LIKE', '%' . $q . '%' )->orderBy('created_at')->paginate(10);
+            $keahlian = Keahlian::where( 'id', 'LIKE', '%' . $q . '%' )->orWhere ( 'nama_keahlian', 'LIKE', '%' . $q . '%' )->orderBy('created_at')->paginate(10);
         }else{
-            $jadwal = Jadwal::orderBy('created_at')->paginate(10);
+            $keahlian = Keahlian::orderBy('created_at')->paginate(10);
         }
         
         
-        return view('admin.jadwal.index', compact('jadwal'));
+        return view('admin.keahlian.index', compact('keahlian'));
         
     }
 
@@ -36,7 +36,7 @@ class JadwalController extends Controller
      */
     public function create()
     {
-        return view('admin.jadwal.create');
+        return view('admin.keahlian.create');
     }
 
     /**
@@ -48,23 +48,23 @@ class JadwalController extends Controller
     public function store(Request $request)
     {   
         $this->validate($request, [
-             'id_pemesanan' => 'required|max:255',
-                'tanggal_kunjungan' => 'required',
-                'tanggal_selesai' => 'required',
+             'nama_keahlian' => 'required|max:255',
+                'jenis_keahlian' => 'required|max:255',
+                'keterangan_keahlian' => 'required',
                 
         ]);
 
-        $jadwal = Jadwal::create([
-            'id_pemesanan' => $request->id_pemesanan,
-              'tanggal_kunjungan' => $request->tanggal_kunjungan,
-              'tanggal_selesai' => $request->tanggal_selesai,
+        $keahlian = Keahlian::create([
+            'nama_keahlian' => $request->nama_keahlian,
+              'jenis_keahlian' => $request->jenis_keahlian,
+              'keterangan_keahlian' => $request->keterangan_keahlian,
               
         ]);
 
-        if($jadwal){
-            return redirect('jadwal')->with('msg', 'Jadwal Berhasil di Tambahkan!');
+        if($keahlian){
+            return redirect('keahlian')->with('msg', 'Keahlian Berhasil di Tambahkan!');
         } else {
-            return redirect()->route('jadwal.create')->with('error', 'Jadwal gagal di Tambahkan');
+            return redirect()->route('keahlian.create')->with('error', 'Keahlian gagal di Tambahkan');
         }
 
 }
@@ -88,9 +88,9 @@ class JadwalController extends Controller
      */
     public function edit($id)
     { 
-        $jadwal = Jadwal::where('id', $id)->get();
+        $keahlian = Keahlian::where('id', $id)->get();
 
-        return view('admin.jadwal.edit', ['jadwal' => $jadwal]);
+        return view('admin.keahlian.edit', ['keahlian' => $keahlian]);
     }
 
     /**
@@ -103,16 +103,16 @@ class JadwalController extends Controller
     public function update(Request $request, $id)
     {
         // update data
-        $jadwal = array(
-            'id_pemesanan' => $request->id_pemesanan,
-              'tanggal_kunjungan' => $request->tanggal_kunjungan,
-              'tanggal_selesai' => $request->tanggal_selesai,
+        $keahlian = array(
+            'nama_keahlian' => $request->nama_keahlian,
+              'jenis_keahlian' => $request->jenis_keahlian,
+              'keterangan_keahlian' => $request->keterangan_keahlian,
               
         );
 
-        $update = Jadwal::where('id',$id)->update($jadwal);
+        $update = Keahlian::where('id',$id)->update($keahlian);
 
-        return redirect()->route('jadwal.index')->with('msg', 'Jadwal Berhasil di ubah');
+        return redirect()->route('keahlian.index')->with('msg', 'Keahlian Berhasil di ubah');
     }
 
     /**
@@ -124,11 +124,11 @@ class JadwalController extends Controller
     public function destroy($id)
     {
         try {
-            $jadwal = Jadwal::where('id',$id)->delete();
+            $keahlian = Keahlian::where('id',$id)->delete();
       
-            return redirect('jadwal')->with('msg', 'Jadwal Berhasil dihapus');
+            return redirect('keahlian')->with('msg', 'Keahlian Berhasil dihapus');
         } catch (\Illuminate\Database\QueryException $e) {
-            return redirect('jadwal')->with('msg', 'Jadwal Gagal dihapus, Sudah digunakan di data lain.');
+            return redirect('keahlian')->with('msg', 'Keahlian Gagal dihapus, Sudah digunakan di data lain.');
         }
     }
 }

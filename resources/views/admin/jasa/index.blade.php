@@ -1,7 +1,7 @@
+
 @extends('layout-admin')
 @section('content')
-
-    <!-- Starter Section Section -->
+   <!-- Starter Section Section -->
     <section id="starter-section" class="starter-section section">
     <div class="page-title">
       
@@ -21,9 +21,20 @@
         <h2>Jasa Layanan</h2>
         <p>Layanan Tersedia Dandani.id</p>
       </div><!-- End Section Title -->
-
-      <a class="btn btn-primary mb-5" href="{{route('jasa.create')}}"><i class="bi bi-plus"></i> Tambah</a>
-      <div class="card-body">
+      <div class="row">
+        <div class="col-md-9">
+          <a class="btn btn-primary mb-5" href="{{route('jasa.create')}}"><i class="bi bi-plus"></i> Tambah</a>
+        </div>
+        <div class="col-md-3">
+          <div class="search-widget widget-item">
+            <form action="{{route('jasa.index')}}" method="GET">
+              <input required type="text" name="query" value="<?php if(isset($_GET['query'])) echo $_GET['query']; ?>">
+              <button type="submit"  title="Search"><i class="bi bi-search"></i></button>
+            </form>
+          </div>
+        </div>
+      </div>
+      
           <div class="table-responsive">
             <table id="tbl_data" class="table" style="width:100%">
             <thead>
@@ -41,10 +52,9 @@
               </tr>
             </thead>
             <tbody>
-              <?php $no = 1; ?>
               @foreach($jasa as $data )
               <tr>
-                <td class="text-center"><?= $no; ?></td>
+                <td class="text-center">{{ ($jasa->perPage() * ($jasa->currentPage() - 1)) + $loop->iteration }}</td>
                 
 								<td class="text-center">{{ $data->id }}</td>
 								<td class="text-center">{{ $data->nama_jasa }}</td>
@@ -57,16 +67,16 @@
                   <a href="{{ url('jasa/edit')}}/{{ $data->id }}" class="btn btn-success"><i class="bi bi-pencil"></i> Edit</a>
                 </td>
               </tr>
-              <?php $no++; ?>
               @endforeach
             </tbody>
             </table>
+            {{ $jasa->links() }}
+
           </div>
         </div>
       </div>
-
     </section><!-- /Starter Section Section -->
     <section id="starter-section" class="starter-section section">
     </section><!-- /Starter Section Section -->
-       
+      
 @endsection

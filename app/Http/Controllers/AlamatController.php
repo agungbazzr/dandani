@@ -15,11 +15,18 @@ class AlamatController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $alamat = Alamat::orderBy('created_at')->get();
+        if (isset($request->query)) {
+            $q = $request->query('query');
+            $alamat = Alamat::where( 'id', 'LIKE', '%' . $q . '%' )->orWhere ( 'id_pemilik', 'LIKE', '%' . $q . '%' )->orderBy('created_at')->paginate(10);
+        }else{
+            $alamat = Alamat::orderBy('created_at')->paginate(10);
+        }
         
-        return view('alamat.index', compact('alamat'));
+        
+        return view('admin.alamat.index', compact('alamat'));
+        
     }
 
     /**
@@ -29,7 +36,7 @@ class AlamatController extends Controller
      */
     public function create()
     {
-        return view('alamat.create');
+        return view('admin.alamat.create');
     }
 
     /**
@@ -41,23 +48,21 @@ class AlamatController extends Controller
     public function store(Request $request)
     {   
         $this->validate($request, [
-             'id' => 'required|max:20 ',
-              'id_pemilik' => 'required|max:255',
-              'title' => 'required|max:255',
-              'geo_lat' => 'required|max:255',
-              'geo_long' => 'required|max:255',
-              'alamat' => 'required',
-              
+             'id_pemilik' => 'required|max:255',
+                'title' => 'required|max:255',
+                'geo_lat' => 'required|max:255',
+                'geo_long' => 'required|max:255',
+                'alamat' => 'required',
+                
         ]);
 
         $alamat = Alamat::create([
-            'id' => $request->id,
             'id_pemilik' => $request->id_pemilik,
-            'title' => $request->title,
-            'geo_lat' => $request->geo_lat,
-            'geo_long' => $request->geo_long,
-            'alamat' => $request->alamat,
-            
+              'title' => $request->title,
+              'geo_lat' => $request->geo_lat,
+              'geo_long' => $request->geo_long,
+              'alamat' => $request->alamat,
+              
         ]);
 
         if($alamat){
@@ -89,7 +94,7 @@ class AlamatController extends Controller
     { 
         $alamat = Alamat::where('id', $id)->get();
 
-        return view('alamat.edit', ['alamat' => $alamat]);
+        return view('admin.alamat.edit', ['alamat' => $alamat]);
     }
 
     /**
@@ -103,13 +108,12 @@ class AlamatController extends Controller
     {
         // update data
         $alamat = array(
-            'id' => $request->id,
             'id_pemilik' => $request->id_pemilik,
-            'title' => $request->title,
-            'geo_lat' => $request->geo_lat,
-            'geo_long' => $request->geo_long,
-            'alamat' => $request->alamat,
-            
+              'title' => $request->title,
+              'geo_lat' => $request->geo_lat,
+              'geo_long' => $request->geo_long,
+              'alamat' => $request->alamat,
+              
         );
 
         $update = Alamat::where('id',$id)->update($alamat);

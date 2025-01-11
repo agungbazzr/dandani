@@ -1,57 +1,42 @@
-@extends('layouts.app-master')
 
-@section('title', 'DANDANI | Tukang')
-@section('link')
-  <link rel="stylesheet" href="{{ asset('plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
-  <link rel="stylesheet" href="{{ asset('plugins/datatables-responsive/css/responsive.bootstrap4.min.css') }}">
-  <link rel="stylesheet" href="{{ asset('plugins/datatables-buttons/css/buttons.bootstrap4.min.css') }}">
-@endsection
+@extends('layout-admin')
 @section('content')
-    <section class="content-header">
-      <div class="container-fluid">
-        <div class="row mb-2">
-          <div class="col-sm-6">
-            <h1> Tukang</h1>
-          </div>
-          <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="#"> Tukang</a></li>
-              <li class="breadcrumb-item active">List</li>
-            </ol>
+   <!-- Starter Section Section -->
+    <section id="starter-section" class="starter-section section">
+    <div class="page-title">
+      
+      <nav class="breadcrumbs">
+        <div class="container">
+          <ol>
+            <li><a href="{{url('tukang')}}">Layanan</a></li>
+            <li class="current">Tukang</li>
+          </ol>
+        </div>
+      </nav>
+    </div><!-- End Page Title -->
+     
+      <div class="container" data-aos="fade-up">
+         <!-- Section Title -->
+      <div class="container section-title mt-5" data-aos="fade-up">
+        <h2>Tukang Layanan</h2>
+        <p>Layanan Tersedia Dandani.id</p>
+      </div><!-- End Section Title -->
+      <div class="row">
+        <div class="col-md-9">
+          <a class="btn btn-primary mb-5" href="{{route('tukang.create')}}"><i class="bi bi-plus"></i> Tambah</a>
+        </div>
+        <div class="col-md-3">
+          <div class="search-widget widget-item">
+            <form action="{{route('tukang.index')}}" method="GET">
+              <input required type="text" name="query" value="<?php if(isset($_GET['query'])) echo $_GET['query']; ?>">
+              <button type="submit"  title="Search"><i class="bi bi-search"></i></button>
+            </form>
           </div>
         </div>
-      </div><!-- /.container-fluid -->
-    </section>
-
-    <!-- Main content -->
-    <section class="content">
-    @if (session('msg'))
-      <div class="alert alert-success alert-dismissible">
-        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-        <h5><i class="icon fas fa-check"></i> Success!</h5>
-        {{ session('msg') }}
       </div>
-    @endif
-    @if(session('error'))
-      <div class="alert alert-error alert-dismissible">
-        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-        <h5><i class="icon fas fa-check"></i> Error!</h5>
-        {{ session ('error') }}
-      </div>
-    @endif
-
-      <!-- Default box -->
-      <div class="card">
-        <div class="card-header">
-          <h3 class="card-title">Data Tukang</h3>
-
-          <div class="card-tools">
-            <a href="{{ route('tukang.create') }}" class="btn btn-info"><i class="fa fa-plus-circle"></i> Tambah</a>
-          </div>
-        </div>
-        <div class="card-body">
+      
           <div class="table-responsive">
-            <table id="tbl_data" class="table table-striped" style="width:100%">
+            <table id="tbl_data" class="table" style="width:100%">
             <thead>
               <tr>
                 <th class="text-center">No.</th>
@@ -69,10 +54,9 @@
               </tr>
             </thead>
             <tbody>
-              <?php $no = 1; ?>
               @foreach($tukang as $data )
               <tr>
-                <td class="text-center"><?= $no; ?></td>
+                <td class="text-center">{{ ($tukang->perPage() * ($tukang->currentPage() - 1)) + $loop->iteration }}</td>
                 
 								<td class="text-center">{{ $data->id }}</td>
 								<td class="text-center">{{ $data->image }}</td>
@@ -83,33 +67,20 @@
 								<td class="text-center">{{ $data->geo_long }}</td>
 								<td class="text-center">{{ $data->alamat }}</td>
                 <td class="text-center">
-                  <a href="{{ url('tukang/destroy')}}/{{ $data->id }}" onclick="return confirm('Apakah anda yakin ingin menghapus data ini?')" class="btn btn-primary"><i class="fa fa-trash fa-fw"></i> Hapus</a> |
-                  <a href="{{ url('tukang/edit')}}/{{ $data->id }}" class="btn btn-success"><i class="fa fa-edit"></i> Edit</a>
+                  <a href="{{ url('tukang/destroy')}}/{{ $data->id }}" onclick="return confirm('Apakah anda yakin ingin menghapus data ini?')" class="btn btn-danger"><i class="bi bi-trash"></i> Hapus</a> |
+                  <a href="{{ url('tukang/edit')}}/{{ $data->id }}" class="btn btn-success"><i class="bi bi-pencil"></i> Edit</a>
                 </td>
               </tr>
-              <?php $no++; ?>
               @endforeach
             </tbody>
             </table>
+            {{ $tukang->links() }}
+
           </div>
         </div>
-        <!-- /.card-body -->
-        <!-- <div class="card-footer">
-          Footer
-        </div> -->
-        <!-- /.card-footer-->
       </div>
-      <!-- /.card -->
-
-    </section>
-@endsection
-@section('script')
-<script src="{{ asset('plugins/datatables/jquery.dataTables.min.js') }}"></script>
-<script src="{{ asset('plugins/datatables-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
-<script src="{{ asset('plugins/datatables-responsive/js/dataTables.responsive.min.js') }}"></script>
-<script src="{{ asset('plugins/datatables-responsive/js/responsive.bootstrap4.min.js') }}"></script>
-<script>
-  $('#side_tukang').addClass("active");
-  $('#tbl_data').DataTable();
-</script>
+    </section><!-- /Starter Section Section -->
+    <section id="starter-section" class="starter-section section">
+    </section><!-- /Starter Section Section -->
+      
 @endsection
